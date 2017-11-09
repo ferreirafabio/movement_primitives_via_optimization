@@ -1,0 +1,92 @@
+<mujoco model="planar_robot">
+    <compiler angle="degree" />
+    
+    <option cone="elliptic" iterations="50" jacobian="sparse" solver="Newton" timestep="0.001" tolerance="1e-10" />
+
+    <size nconmax="2000" njmax="5000" nstack="5000000" />
+
+    <default>
+        <geom rgba=".8 .6 .4 1" />
+        
+        
+        <default class="object">
+            <geom material="MatObj" rgba=".9 .1 .1 1" size="0.15" type="sphere" />
+        </default>
+        
+        <default class="obj_label">
+            <geom material="MatObj" rgba="1 0 0 1" size="0.05 0.05 0.001" type="box" />
+        </default>
+                
+        <default class="target_label">
+            <geom material="MatObj" rgba=".4 .9 .9 1" size="0.05 0.05 0.001" type="box" />
+        </default>
+        
+        <default class="border">
+            <geom rgba=".4 .4 .4 1" size="0.1" type="capsule" />
+        </default>
+
+        <default class="borderpost">
+            <geom rgba=".55 .55 .55 1" size="0.11 0.11 0.11" type="box" />
+        </default>
+    </default>
+    <asset>
+        <texture builtin="gradient" height="128" rgb1=".4 .6 .8" rgb2="0 0 0" type="skybox" width="128" />  
+        <texture builtin="checker" height="512" name="texplane" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" type="2d" width="512" />  
+        <texture builtin="flat" height="128" mark="cross" markrgb="1 1 1" name="texgeom" rgb1="0.6 0.6 0.6" rgb2="0.6 0.6 0.6" type="cube" width="128" />  
+        <material name="MatObj" texture="texgeom" texuniform="true" />
+        <material name="MatPlane" reflectance="0" texrepeat="1 1" texture="texplane" texuniform="true" />
+    </asset>
+    
+    <visual>
+        <quality offsamples="8" shadowsize="4096" />
+        <map force="0.05" znear="0.1" />
+    </visual>
+    
+    <statistic extent="4" />
+
+    <worldbody>
+        
+        <light diffuse=".8 .8 .8" dir="0 0 -10" directional="true" pos="0 0 10" />
+
+        <geom condim="3" material="MatPlane" name="floor" pos="0 0 -0.1" size="2 2 .125" type="plane" />
+    
+        <geom class="border" fromto="-2 2 0 2 2 0" />
+        <geom class="border" fromto="-2 -2 0 2 -2 0" />
+        <geom class="border" fromto="2 2 0 2 -2 0" />
+        <geom class="border" fromto="-2 2 0 -2 -2 0" />
+        <geom class="borderpost" pos="2 2 0" />
+        <geom class="borderpost" pos="-2 2 0" />
+        <geom class="borderpost" pos="2 -2 0" />
+        <geom class="borderpost" pos="-2 -2 0" />
+        <geom class="target_label" name="target_pose" pos="-0.0681352171819 1.39787470418 -0.1" quat="1 0 0 0" />
+        
+        <body name="planar_robot">
+            <geom fromto="0 0 0 0.6 0 0" size="0.1" type="capsule" />
+            <joint axis="0 0 1" pos="0 0 0" type="hinge" />
+            <body>
+                <geom fromto="0.6 0 0 1.2 0 0" size="0.1" type="capsule" />
+                <joint armature="0.01" axis="0 0 1" damping="5" pos="0.6 0 0" range="-120 120" stiffness="10" type="hinge" />
+                <body>
+                    
+                    <geom pos="1.2 0 0.0" size="0.08 0.3 0.1" type="box" />
+                    <body>
+                        <geom pos="1.5 -0.24 0.0" size="0.24 0.05 0.1" type="box" />
+                        <joint armature="0.01" axis="0 0 1" damping="5" pos="1.2 -0.24 0" range="-30 0" stiffness="10" type="hinge" />
+                    </body>
+                    <body>
+                        <geom pos="1.5 0.24 0.0" size="0.24 0.05 0.1" type="box" />
+                        <joint armature="0.01" axis="0 0 1" damping="5" pos="1.2 0.24 0" range="0 30" stiffness="10" type="hinge" />
+                    </body>
+                    
+                </body>
+            </body>
+        </body>
+        
+        <body name="targetObj" pos="-1.01688428927 -0.727459859267 0" quat="1 0 0 0">
+            <freejoint />
+            <geom class="object" />
+        </body>
+        
+
+    </worldbody>
+</mujoco>
