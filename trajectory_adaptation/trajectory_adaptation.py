@@ -7,7 +7,6 @@ def is_pos_def(x):
   return np.all(np.linalg.eigvals(x) > 0)
 
 
-
 def traj_adapt(traj_d, start, goal, norm):
   '''
   :param traj: (T, n)
@@ -18,13 +17,15 @@ def traj_adapt(traj_d, start, goal, norm):
   '''
   assert is_pos_def(norm), "norm is not positive definite"
 
-  #traj = np.ndarray(shape=(T, dim))
-
-  fun = lambda traj: ( (traj_d - traj).T.dot(norm) ).dot(traj_d - traj)
+  fun = lambda traj: ((traj_d - traj).T.dot(norm)).dot(traj_d - traj)
   cons = ({'type': 'eq', 'fun': lambda traj: traj[0] - start},
           {'type': 'eq', 'fun': lambda traj: traj[-1] - goal})
 
-  return minimize(fun, x0=np.array([2]), method='SLSQP', constraints=cons)
+  # let's assume the trajectory must not be negative
+  bnds=((0, None),)*T
+
+  return minimize(fun, x0=np.zeros(shape=(T)), method='SLSQP', bounds=bnds, constraints=cons)
+
 
 
 def finite_dif_matrix(size):
@@ -37,22 +38,25 @@ def finite_dif_matrix(size):
 
 
 
-T = 1000
+T = 100
 dim = 2
 
 """ generate 2d example trajectory """
-x = np.linspace(start=0, stop=4, num=T)
-y = 0.25 * x**2
-
-traj_d = np.asarray([x,y]).T
+x = np.linspace(start=0, stop=5, num=T)
+old_traj = 0.25* x ** 2
+traj_d = np.asarray([x, old_traj]).T
 
 start = [0,0]
-goal = [3,3]
+goal = [5,4.5]
 K = finite_dif_matrix(T)
 M = np.transpose(K).dot(K)
 
-print(traj_adapt(traj_d, start, goal, M))
+new_traj_y=traj_adapt(traj_d[:,1], start[1], goal[1], M)
+new_traj_x=traj_adapt(traj_d[:,0], start[0], goal[0], M)
+print(new_traj_x)
+print(new_traj_y)
 
-
-#plt.plot(x, y, A)
-#plt.show()
+plt.plot(x, old_traj)
+plt.plot(new_traj_x.x, new_traj_y.x)
+plt.plot([start[0], goal[0]], [start[1], goal[1]])
+plt.show()
