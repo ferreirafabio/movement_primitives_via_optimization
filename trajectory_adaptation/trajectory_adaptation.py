@@ -1,13 +1,12 @@
 import numpy as np
 from scipy.optimize import minimize
-import matplotlib.pyplot as plt
 
 
 def is_pos_def(x):
   return np.all(np.linalg.eigvals(x) > 0)
 
 
-def traj_adapt(traj_d, start, goal, norm):
+def adapt(traj_d, start, goal, norm):
   '''
   :param traj: (T, n)
   :param start: (n,)
@@ -22,13 +21,14 @@ def traj_adapt(traj_d, start, goal, norm):
           {'type': 'eq', 'fun': lambda traj: traj[-1] - goal})
 
   # let's assume the trajectory must not be negative
-  bnds=((0, None),)*T
+  #bnds=((0, None),)*traj_d.shape[0]
 
-  return minimize(fun, x0=np.zeros(shape=(T)), method='SLSQP', bounds=bnds, constraints=cons)
+  return minimize(fun, x0=np.ones(shape=(traj_d.shape[0]))*-1, method='SLSQP', bounds=None, constraints=cons,
+   tol=1e-17, options={'ftol': 1e-17, 'disp': True, 'maxiter': 20000})
 
 
 
-def finite_dif_matrix(size):
+def get_finite_diff_matrix(size):
   '''
    finite differencing matrix
   :param size: size of the quadratic matrix
@@ -38,25 +38,3 @@ def finite_dif_matrix(size):
 
 
 
-T = 100
-dim = 2
-
-""" generate 2d example trajectory """
-x = np.linspace(start=0, stop=5, num=T)
-old_traj = 0.25* x ** 2
-traj_d = np.asarray([x, old_traj]).T
-
-start = [0,0]
-goal = [5,4.5]
-K = finite_dif_matrix(T)
-M = np.transpose(K).dot(K)
-
-new_traj_y=traj_adapt(traj_d[:,1], start[1], goal[1], M)
-new_traj_x=traj_adapt(traj_d[:,0], start[0], goal[0], M)
-print(new_traj_x)
-print(new_traj_y)
-
-plt.plot(x, old_traj)
-plt.plot(new_traj_x.x, new_traj_y.x)
-plt.plot([start[0], goal[0]], [start[1], goal[1]])
-plt.show()
