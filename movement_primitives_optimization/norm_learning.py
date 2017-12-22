@@ -3,14 +3,26 @@ from scipy.optimize import minimize
 
 
 def loss_function(traj, traj_j):
+  """
+  indicator loss function for trajectories
+  :param traj: (ndarray) first trajectory (the one to be minimized) of shape (n,)
+  :param traj_j: (ndarray) second trajectory (from the demonstrations) of shape (n,)
+  :return: 0 if trajectories are of the same shape and equal in terms of their elements, 1 otherwise
+  """
   if np.array_equal(traj, traj_j):
     return 0
   return 1
 
 
-
 def inner_minimization(traj_i, traj_j, norm):
-
+  """
+  # TODO: write documentation
+  :param traj_i:
+  :param traj_j:
+  :param norm:
+  :return:
+  """
+  # TODO: test implementation
   fun = lambda traj: ((traj_i-traj).T.dot(norm).dot(traj_i-traj) - loss_function(traj, traj_j))
 
   cons = ({'type': 'eq', 'fun': lambda traj: traj[0] - traj_j[0]},
