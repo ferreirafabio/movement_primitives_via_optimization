@@ -1,20 +1,11 @@
 import numpy as np
 from scipy.optimize import minimize
+import pandas as pd
+from movement_primitives_optimization.helpers import math
 
 
-def loss_function(traj, traj_j):
-  """
-  indicator loss function for trajectories
-  :param traj: (ndarray) first trajectory (the one to be minimized) of shape (n,)
-  :param traj_j: (ndarray) second trajectory (from the demonstrations) of shape (n,)
-  :return: 0 if trajectories are of the same shape and equal in terms of their elements, 1 otherwise
-  """
-  if np.array_equal(traj, traj_j):
-    return 0
-  return 1
 
-
-def inner_minimization(traj_i, traj_j, norm):
+def inner_minimization_per_dimension(traj_i, traj_j, norm):
   """
   # TODO: write documentation
   :param traj_i:
@@ -22,8 +13,7 @@ def inner_minimization(traj_i, traj_j, norm):
   :param norm:
   :return:
   """
-  # TODO: test implementation
-  fun = lambda traj: ((traj_i-traj).T.dot(norm).dot(traj_i-traj) - loss_function(traj, traj_j))
+  fun = lambda traj: ((traj_i-traj).T.dot(norm).dot(traj_i-traj) - math.loss_function(traj, traj_j))
 
   cons = ({'type': 'eq', 'fun': lambda traj: traj[0] - traj_j[0]},
           {'type': 'eq', 'fun': lambda traj: traj[-1] - traj_j[1]})
@@ -32,3 +22,40 @@ def inner_minimization(traj_i, traj_j, norm):
                   tol=1e-17, options={'ftol': 1e-17, 'disp': True, 'maxiter': 20000})
 
 
+
+def inner_minimization(traj_i, traj_j, norm):
+  assert traj_i.shape[1] == traj_j.shape[1]
+
+  dimensions = traj_i.shape[1]
+  new_trajectories = []
+
+  for dim in range(dimensions):
+    new_traj = inner_minimization_per_dimension(traj_i[:, dim], traj_j[:, dim], norm)
+    new_trajectories.append(new_traj.fun)
+
+
+  return np.asarray(new_trajectories)
+
+
+
+def learn_norm(demonstrations, init_norm, alpha, iterations=1000):
+  assert demonstrations, "no trajectory given"
+  assert alpha > 0
+  assert math.is_pos_def(init_norm)
+
+
+  if isinstance(demonstrations, pd.DataFrame):
+    # flatten required to convert 2d array to 1d
+    demonstrations = demonstrations.values.flatten()
+
+  norm = grad_m = init_norm
+
+
+  for i in range(iterations):
+    for traj_i in demonstrations:
+      for traj_j in demonstrations:
+        traj_ij = inner_minimization(traj_i, traj_j, norm)
+        grad_m = np.sum(traj_i-traj_j).dot(traj_i-traj_j).T - (traj_i - traj_ij)*(traj_i-traj_ij).T
+    norm -= alpha * grad_m
+
+  return norm

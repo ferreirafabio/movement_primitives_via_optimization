@@ -30,3 +30,29 @@ def load_trajectories(path_to_pickle):
   assert os.path.isfile(path_to_pickle), "invalid path to output directory"
   df = pd.read_pickle(path_to_pickle)
   return df
+
+
+def get_shortest_trajectory_length(trajectories):
+  """
+  determines and returns the shortest sequence length of trajectories given by a list of ndarrays in which each
+  element represents a single (possibly multi-dimensional) trajectory.
+
+
+  :param trajectories: an ndarray of shape [#number of trajectories] containing trajectory as lists of shape [
+  timesteps, dimension]
+  :return: the shortest sequence of trajectories
+  """
+  return min([trajectories[i].shape[0] for i in range(trajectories.shape[0])])
+
+
+def trim_trajectories(trajectories, trim_length):
+  """
+  trims all provided trajectories according to trim_length in its sequence length.
+  :param trajectories: an ndarray of shape [#number of trajectories] containing trajectory as lists of shape [
+  timesteps, dimension]
+  :param trim_length: maximum length the trajectories should have after processing
+  :return: resulting shape of the trajectories will be [:trim_length, dimension] if trim_length > timesteps
+  """
+  return [trajectories[i][:trim_length] for i in range(trajectories.shape[0])]
+
+

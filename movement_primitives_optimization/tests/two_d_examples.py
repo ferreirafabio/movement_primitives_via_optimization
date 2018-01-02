@@ -32,17 +32,19 @@ def record_trajectories_and_adapt(number_trajectories):
   adapt_recorded_trajectories(recorded_trajectories)
 
 
-def adapt_recorded_trajectories(trajectories):
+def adapt_recorded_trajectories(trajectories, plot=True):
   """ adapts all the given trajectories and plots them to different figure windows """
   assert trajectories is not None, "no trajectory given"
 
+  was_df = False
   if isinstance(trajectories, pd.DataFrame):
     # flatten required to convert 2d array to 1d
     trajectories = trajectories.values.flatten()
+    was_df = True
 
 
   number_of_recordings = trajectories.shape[0]
-
+  trajectories_adapted = list()
   for i_traj in range(number_of_recordings):
     traj_d = trajectories[i_traj]
 
@@ -53,16 +55,20 @@ def adapt_recorded_trajectories(trajectories):
 
     new_traj_x = adapted_trajectories[0]
     new_traj_y = adapted_trajectories[1]
+    new_traj_xy = np.asarray([new_traj_x, new_traj_y]).T
+    trajectories_adapted.append(new_traj_xy)
 
+    if plot:
+      plt.figure()
+      plt.plot(traj_d[:,0], traj_d[:,1])
+      plt.plot(new_traj_x, new_traj_y)
+      plt.plot([start[0], goal[0]], [start[1], goal[1]])
+      plt.show()
 
-    plt.figure()
-    plt.plot(traj_d[:,0], traj_d[:,1])
-    plt.plot(new_traj_x, new_traj_y)
-    plt.plot([start[0], goal[0]], [start[1], goal[1]])
-
-
-  plt.show()
-
+  if was_df:
+    return pd.DataFrame(np.asarray(trajectories_adapted))
+  else:
+    return np.asarray(trajectories_adapted)
 
 
 def record_and_do_inner_minimization():

@@ -1,14 +1,6 @@
 import numpy as np
 from scipy.optimize import minimize
-
-
-def is_pos_def(M):
-  """ checks whether x^T * M * x > 0, M being the matrix to be checked
-  :param M: the matrix to be checked
-  :return: True if positive definite, False otherwise
-  """
-
-  return np.all(np.linalg.eigvals(M) > 0)
+from movement_primitives_optimization.helpers import math
 
 
 def optimize(traj_d, start, goal, norm):
@@ -23,7 +15,7 @@ def optimize(traj_d, start, goal, norm):
   :param norm: (T,T) --> assert positive definite
   :return: adapted trajectory (T,n)
   '''
-  assert is_pos_def(norm), "norm is not positive definite"
+  assert math.is_pos_def(norm), "norm is not positive definite"
 
   fun = lambda traj: ((traj_d - traj).T.dot(norm)).dot(traj_d - traj)
   cons = ({'type': 'eq', 'fun': lambda traj: traj[0] - start},
@@ -48,7 +40,7 @@ def adapt_all_dimensions(traj_d, start, goal):
   the same as the order in the input.
   """
 
-  K = get_finite_diff_matrix(traj_d.shape[0])
+  K = math.get_finite_diff_matrix(traj_d.shape[0])
   M = np.transpose(K).dot(K)
 
   dimensions = traj_d.shape[1]
@@ -61,15 +53,6 @@ def adapt_all_dimensions(traj_d, start, goal):
 
   return np.asarray(new_trajectories)
 
-
-def get_finite_diff_matrix(size):
-  '''
-  finite differencing matrix according to a spring damper system with which new positions are calculated based on
-  the accelerations in a system.
-  :param size: size of the quadratic matrix
-  :return: the differencing matrix of shape (size, size)
-   '''
-  return 2 * np.diag(np.ones([size])) + np.diag(-np.ones([size - 1]), k=1) + np.diag(-np.ones([size - 1]), k=-1)
 
 
 
