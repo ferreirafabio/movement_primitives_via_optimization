@@ -52,10 +52,11 @@ def learn_norm(demonstrations, init_norm, alpha, iterations=1000):
 
 
   for i in range(iterations):
+    print("iteration: " + str(i) + "\n")
     for traj_i in demonstrations:
       for traj_j in demonstrations:
         traj_ij = inner_minimization(traj_i, traj_j, norm)
-        grad_m = np.sum(traj_i-traj_j).dot(traj_i-traj_j).T - (traj_i - traj_ij)*(traj_i-traj_ij).T
+        grad_m = np.sum((traj_i - traj_j).dot((traj_i - traj_j).T) - (traj_i - traj_ij).dot((traj_i - traj_ij).T))
     norm -= alpha * grad_m
 
   return norm

@@ -35,8 +35,6 @@ length_shortest_traj = io.get_shortest_trajectory_length(user_demonstrations)
 print(length_shortest_traj)
 user_demonstrations = io.trim_trajectories(user_demonstrations, length_shortest_traj)
 
-
-
 init_norm = math.get_finite_diff_matrix(size=length_shortest_traj)
 learned_norm = norm_learning.learn_norm(demonstrations=user_demonstrations, init_norm=init_norm, alpha=0.95)
 
