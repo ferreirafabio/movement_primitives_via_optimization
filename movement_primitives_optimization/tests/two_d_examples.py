@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 from movement_primitives_optimization.trajectory_adaptation import *
 from movement_primitives_optimization.record import record_trajectory
@@ -70,18 +69,3 @@ def adapt_recorded_trajectories(trajectories, plot=True):
   else:
     return np.asarray(trajectories_adapted)
 
-
-def record_and_do_inner_minimization():
-  """
-  # TODO: writre implementation
-  :return:
-  """
-  traj_d = record_trajectory.record_n_trajectories(3)
-  assert traj_d is not None, "no trajectory given"
-  print(traj_d.shape)
-
-  demonstrations = traj_d.shape[0]
-
-  # TODO: call inner minimization routine on trajectories
-  for i in range(demonstrations):
-    return NotImplementedError

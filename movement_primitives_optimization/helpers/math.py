@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.linalg import polar
 
 def is_pos_def(M):
   """ checks whether x^T * M * x > 0, M being the matrix to be checked
@@ -29,3 +30,14 @@ def get_finite_diff_matrix(size):
    '''
   return 2 * np.diag(np.ones([size])) + np.diag(-np.ones([size - 1]), k=1) + np.diag(-np.ones([size - 1]), k=-1)
 
+
+def project_norm_pos_def(M):
+  """
+  Projects a matrix (norm) onto the space of pos. (semi) def. matrices by using polar decomposition of the form M = U P
+  where U is a unitary matrix and P is a pos. semi-def. matrix. Currently, we assume that using a pos.-semi-def.
+  suffices as projection onto the pos. def. space due to the numerical approach.
+  :param norm: a square matrix of the form M = U P where U = unitary matrix and P a pos. semi-def. matrix
+  :return: P, the pos. semi-def. matrix of the equation M = U P
+  """
+  U, P = polar(M)
+  return P

@@ -28,5 +28,4 @@ def record_n_trajectories(n=1):
 
   eng.quit()
 
-  # TODO: prune trajectories to equal length if number_trajectories > 1
   return np.array(trajectories)

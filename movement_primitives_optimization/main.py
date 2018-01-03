@@ -28,7 +28,7 @@ from movement_primitives_optimization import norm_learning
 #trajectories_adapted = two_d_examples.adapt_recorded_trajectories(trajectories_df, plot=False)
 #print(trajectories_adapted)
 
-""" MMP """
+""" MMP (equations 19 and 20) """
 user_demonstrations = io.load_trajectories("./data/trajectories_digit_1.pickle")
 user_demonstrations = user_demonstrations.values.flatten()
 length_shortest_traj = io.get_shortest_trajectory_length(user_demonstrations)
@@ -36,6 +36,9 @@ print(length_shortest_traj)
 user_demonstrations = io.trim_trajectories(user_demonstrations, length_shortest_traj)
 
 init_norm = math.get_finite_diff_matrix(size=length_shortest_traj)
-learned_norm = norm_learning.learn_norm(demonstrations=user_demonstrations, init_norm=init_norm, alpha=0.95)
+learned_norm = norm_learning.learn_norm(demonstrations=user_demonstrations, init_norm=init_norm, iterations=10)
+print(learned_norm)
+# TODO: test learning norm
+# TODO: test if pos. semi-def. P of pole decomposition is sufficient for projection (which assumes a pos. def. matrix)
 
 
