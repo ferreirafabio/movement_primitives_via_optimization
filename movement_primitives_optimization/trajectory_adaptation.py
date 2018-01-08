@@ -76,7 +76,7 @@ def adapt_all_dimensions(traj_d, start, goal, method="SQP"):
   """
   assert method in ["SQP", "EQ"]
 
-  M = math.get_finite_diff_matrix(traj_d.shape[0])
+  M = math.get_2nd_order_finite_diff_matrix(traj_d.shape[0])
 
   dimensions = traj_d.shape[1]
   new_trajectories = []

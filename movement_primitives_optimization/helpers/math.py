@@ -21,9 +21,9 @@ def loss_function(traj, traj_j):
   return 1
 
 
-def get_finite_diff_matrix(size):
+def get_2nd_order_finite_diff_matrix(size):
   '''
-  finite differencing matrix according to a spring damper system with which new positions are calculated based on
+  2nd order finite differencing matrix according to a spring damper system with which new positions are calculated based on
   the accelerations in a system.
   :param size: size of the quadratic matrix
   :return: the differencing matrix of shape (size, size)
