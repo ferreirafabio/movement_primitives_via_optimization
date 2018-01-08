@@ -18,7 +18,7 @@ def inner_minimization_per_dimension(traj_i, traj_j, norm):
           {'type': 'eq', 'fun': lambda traj: traj[-1] - traj_j[1]})
 
   return minimize(fun, x0=np.ones(shape=(traj_i.shape[0])), method='SLSQP', bounds=None, constraints=cons,
-                  tol=1e-17, options={'ftol': 1e-17, 'disp': True, 'maxiter': 20000})
+                  tol=1e-17, options={'ftol': 1e-17, 'disp': True, 'maxiter': 20000, "disp": False})
 
 
 def inner_minimization(traj_i, traj_j, norm):
@@ -71,10 +71,11 @@ def learn_norm(demonstrations, init_norm, alpha=0.95, iterations=1000):
     demonstrations = demonstrations.values.flatten()
 
   norm = init_norm
-  grad_m = np.zeros(norm.shape)
+
 
   for i in range(iterations):
     print("iteration: " + str(i+1) + "\n")
+    grad_m = np.zeros(norm.shape)
     for traj_i in demonstrations:
       for traj_j in demonstrations:
         traj_ij = inner_minimization(traj_i, traj_j, norm)
