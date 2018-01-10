@@ -34,7 +34,7 @@ def get_2nd_order_finite_diff_matrix(size):
 def project_norm_pos_def(M):
   """
   Projects a matrix M (norm) onto the cone of pos. (semi) def. matrices
-  :param norm: a square matrix of the form M = U P where U = unitary matrix and P a pos. semi-def. matrix
+  :param M: a square matrix - numpy array of shape (m,m)
   :return: P, the projection of M on the cone pos. semi-def. matrices
   """
   eigval, eigvec = np.linalg.eigh(M)
