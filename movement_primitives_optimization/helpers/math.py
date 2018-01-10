@@ -33,11 +33,12 @@ def get_2nd_order_finite_diff_matrix(size):
 
 def project_norm_pos_def(M):
   """
-  Projects a matrix (norm) onto the space of pos. (semi) def. matrices by using polar decomposition of the form M = U P
-  where U is a unitary matrix and P is a pos. semi-def. matrix. Currently, we assume that using a pos.-semi-def.
-  suffices as projection onto the pos. def. space due to the numerical approach.
+  Projects a matrix M (norm) onto the cone of pos. (semi) def. matrices
   :param norm: a square matrix of the form M = U P where U = unitary matrix and P a pos. semi-def. matrix
-  :return: P, the pos. semi-def. matrix of the equation M = U P
+  :return: P, the projection of M on the cone pos. semi-def. matrices
   """
-  U, P = polar(M)
+  eigval, eigvec = np.linalg.eigh(M)
+  eigval_pos = np.maximum(eigval, 0)
+  P = eigvec.dot(np.diag(eigval_pos)).dot(eigvec.T)
+  assert P.shape == M.shape
   return P
