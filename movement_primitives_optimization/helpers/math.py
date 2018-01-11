@@ -16,7 +16,7 @@ def loss_function(traj, traj_j):
   :param traj_j: (ndarray) second trajectory (from the demonstrations) of shape (n,)
   :return: 0 if trajectories are of the same shape and equal in terms of their elements, 1 otherwise
   """
-  if np.array_equal(traj, traj_j):
+  if np.linalg.norm(traj - traj_j) < 0.01:
     return 0
   return 1
 
@@ -42,3 +42,23 @@ def project_norm_pos_def(M):
   P = eigvec.dot(np.diag(eigval_pos)).dot(eigvec.T)
   assert P.shape == M.shape
   return P
+
+
+def ldl_decomp(A):
+  """
+  Computes the LDL decomposition of A
+  :param A: symmetric matrix A
+  :return: matrices (L, D) with same shape as A
+  """
+  import numpy as np
+  A = np.matrix(A)
+  if not (A.H == A).all():
+    print("A must be Hermitian!")
+    return None, None
+  else:
+    S = np.diag(np.diag(A))
+    Sinv = np.diag(1 / np.diag(A))
+    D = np.matrix(S.dot(S))
+    Lch = np.linalg.cholesky(A)
+    L = np.matrix(Lch.dot(Sinv))
+    return L, D
