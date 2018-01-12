@@ -16,7 +16,8 @@ def loss_function(traj, traj_j):
   :param traj_j: (ndarray) second trajectory (from the demonstrations) of shape (n,)
   :return: 0 if trajectories are of the same shape and equal in terms of their elements, 1 otherwise
   """
-  if np.linalg.norm(traj - traj_j) < 0.01:
+  assert traj.shape == traj_j.shape
+  if np.linalg.norm(traj - traj_j) < 10**-8:
     return 0
   return 1
 
@@ -30,18 +31,62 @@ def get_2nd_order_finite_diff_matrix(size):
    '''
   return 2 * np.diag(np.ones([size])) + np.diag(-np.ones([size - 1]), k=1) + np.diag(-np.ones([size - 1]), k=-1)
 
+def get_1st_order_finite_diff_matrix(size):
+  '''
+  2nd order finite differencing matrix according to a spring damper system with which new positions are calculated based on
+  the accelerations in a system.
+  :param size: size of the quadratic matrix
+  :return: the differencing matrix of shape (size, size)
+   '''
+  return np.diag(np.ones([size])) + np.diag(-np.ones([size - 1]), k=1)
 
-def project_norm_pos_def(M):
+# def project_norm_pos_def(M, eps=10**-8):
+#   """
+#   Projects a matrix M (norm) onto the cone of pos. (semi) def. matrices
+#   :param M: a square matrix - numpy array of shape (m,m)
+#   :return: P, the projection of M on the cone pos. semi-def. matrices
+#   """
+#   eigval, eigvec = np.linalg.eigh(M)
+#   eigval_pos = np.maximum(eigval, eps)
+#   P = eigvec.dot(np.diag(eigval_pos)).dot(eigvec.T)
+#   assert P.shape == M.shape
+#   return P
+
+
+def project_norm_pos_def(A):
   """
-  Projects a matrix M (norm) onto the cone of pos. (semi) def. matrices
-  :param M: a square matrix - numpy array of shape (m,m)
-  :return: P, the projection of M on the cone pos. semi-def. matrices
+  Projects a matrix (norm) onto the space of pos. (semi) def. matrices by using polar decomposition of the form M = U P
+  where U is a unitary matrix and P is a pos. semi-def. matrix. Currently, we assume that using a pos.-semi-def.
+  suffices as projection onto the pos. def. space due to the numerical approach.
+  :param norm: a square matrix
+  :return: P, the pos. semi-def. matrix of the equation M = U P
   """
-  eigval, eigvec = np.linalg.eigh(M)
-  eigval_pos = np.maximum(eigval, 0)
-  P = eigvec.dot(np.diag(eigval_pos)).dot(eigvec.T)
-  assert P.shape == M.shape
-  return P
+  assert A.ndim == 2 and A.shape[0] == A.shape[1], "A must be a square matrix"
+
+  # symmetrize A into B
+  B = (A + A.T) / 2
+
+  # Compute the symmetric polar factor H of B
+  _, H = polar(B)
+
+  A_pd = (B + H) / 2
+
+  # ensure symmetry
+  A_pd = (A_pd + A_pd.T) / 2
+
+  # test that A_pd is indeed PD. If not, then tweak it just a little bit
+  pd = False
+  k = 0
+  while not pd:
+    eig = np.linalg.eigvals(A_pd)
+    pd = np.all(eig > 0)
+    k += 1
+    if pd:
+      mineig = min(eig)
+      A_pd = A_pd + (-mineig * k ** 2 + 10**-8) * np.eye(A.shape[0])
+
+  return A_pd
+
 
 
 def ldl_decomp(A):
@@ -62,3 +107,15 @@ def ldl_decomp(A):
     Lch = np.linalg.cholesky(A)
     L = np.matrix(Lch.dot(Sinv))
     return L, D
+
+def get_d_element(A, i):
+  """
+  computes the i-the diagonal element of the D matrix of the LDL decomposition of A
+  :param A: symmetric Matrix
+  :param i: integer denoting with
+  :return:
+  """
+  assert i < A.shape[0]
+  _, D = ldl_decomp(A)
+  print(A)
+  return np.diag(D)[i]
