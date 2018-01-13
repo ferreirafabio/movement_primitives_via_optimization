@@ -55,11 +55,10 @@ def get_1st_order_finite_diff_matrix(size):
 
 def project_norm_pos_def(A):
   """
-  Projects a matrix (norm) onto the space of pos. (semi) def. matrices by using polar decomposition of the form M = U P
-  where U is a unitary matrix and P is a pos. semi-def. matrix. Currently, we assume that using a pos.-semi-def.
-  suffices as projection onto the pos. def. space due to the numerical approach.
-  :param norm: a square matrix
-  :return: P, the pos. semi-def. matrix of the equation M = U P
+  Calculates the nearest (in Frobenius norm) Symmetric Positive Definite matrix to A
+  https://www.sciencedirect.com/science/article/pii/0024379588902236
+  :param A: a square matrix
+  :return A_pd: the projection of A onto the space pf positive definite matrices
   """
   assert A.ndim == 2 and A.shape[0] == A.shape[1], "A must be a square matrix"
 
@@ -81,7 +80,7 @@ def project_norm_pos_def(A):
     eig = np.linalg.eigvals(A_pd)
     pd = np.all(eig > 0)
     k += 1
-    if pd:
+    if not pd:
       mineig = min(eig)
       A_pd = A_pd + (-mineig * k ** 2 + 10**-8) * np.eye(A.shape[0])
 
