@@ -1,6 +1,6 @@
 # Implementation of the paper "Movement Primitives via Optimization" (Dragan et al., 2015)
 This repository describes a possible implementation of the paper "Movement Primitives via Optimization" (Dragan et al., 2015). It includes both trajectory adaptation with DMPs and norm learning via Lagrangian optimization.
-_Contributors: Jonas Rothfuss, Fabio Ferreira_
+
 
 ## Trajectory adaptation with DMPs
 We implemented the adaptation process (adaptation of a demonstrated trajectory to two new endpoints) in two ways:
@@ -13,3 +13,5 @@ Given that the user provided sample adaptations in addition to the demonstration
     1) compute the optimal solution to the "inner minimization problem" (right term in eq. 19)
     2) compute the gradient update for the norm with a hyper-parameter alpha, update the norm
     3) project the updated norm to the space of pos. def. matrices, unless "iterations" not exceeded, go to 1)
+
+_Contributors: Jonas Rothfuss, Fabio Ferreira_
