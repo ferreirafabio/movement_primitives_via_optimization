@@ -17,8 +17,8 @@ Given that the user provided sample adaptations in addition to the demonstration
     
 
 ### References
-[1]
-[2] "Computing a nearest symmetric positive semidefinite matrix", Higham, 1988, https://www.sciencedirect.com/science/article/pii/0024379588902236
+* [1] 
+* [2] "Computing a nearest symmetric positive semidefinite matrix", Higham, 1988, https://www.sciencedirect.com/science/article/pii/0024379588902236
 
 
 ### Credits
