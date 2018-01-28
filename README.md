@@ -17,7 +17,7 @@ Given that the user provided sample adaptations in addition to the demonstration
     
 
 ### References
-* [1] 
+* [1] "Movement Primitives via Optimization", Dragan et al., 2015, https://www.ri.cmu.edu/pub_files/2015/5/DMP_IEEE.pdf, http://ieeexplore.ieee.org/document/7139510/, 
 * [2] "Computing a nearest symmetric positive semidefinite matrix", Higham, 1988, https://www.sciencedirect.com/science/article/pii/0024379588902236
 
 
