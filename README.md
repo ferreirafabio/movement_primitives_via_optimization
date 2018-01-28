@@ -1,6 +1,6 @@
 # Implementation of the paper "Movement Primitives via Optimization" (Dragan et al., 2015)
 This repository describes a possible implementation of the paper "Movement Primitives via Optimization" (Dragan et al., 2015). It includes both trajectory adaptation with DMPs and norm learning via Lagrangian optimization.
-Contributors: Jonas Rothfuss, Fabio Ferreira
+_Contributors: Jonas Rothfuss, Fabio Ferreira_
 
 ## Trajectory adaptation with DMPs
 We implemented the adaptation process (adaptation of a demonstrated trajectory to two new endpoints) in two ways:
