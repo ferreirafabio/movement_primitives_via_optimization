@@ -10,9 +10,9 @@ We implemented the adaptation process for demonstrated trajectories in two diffe
 ## Norm learning
 Given that the user provided sample adaptations in addition to the demonstrations, the norm learning part is executed by applying Maximum Margin Planning. The functions iteratively apply the following three steps,
   given pairs of trajectories (traj_i, traj_j) in DxD (D being the set of user demonstrations):
-    - 1) compute the optimal solution to the "inner minimization problem" (right term in eq. 19)
-    - 2) compute the gradient update for the norm with a hyper-parameter alpha, update the norm
-    - 3) project the updated norm to the space of pos. def. matrices, unless "iterations" not exceeded, go to 1)
+    * 1) compute the optimal solution to the "inner minimization problem" (right term in eq. 19)
+    * 2) compute the gradient update for the norm with a hyper-parameter alpha, update the norm
+    * 3) project the updated norm to the space of pos. def. matrices, unless "iterations" not exceeded, go to 1)
     Note: the projection is carried out by computing the nearest symmetric pos. def. matrix in the Frobenius norm according to [2], a method based on the polar decomposition. A second method we examined is based on the Cholesky decomposition.
     
 
