@@ -8,8 +8,7 @@ We implemented the adaptation process for demonstrated trajectories in two diffe
 2. As the optimization of the equation system implied by the Lagrangian optimization in equation 3 and 4 (method used: scipy broyden2). Again, a spring damper system is assumed.
 
 ## Norm learning
-Given that the user provided sample adaptations in addition to the demonstrations, the norm learning part is executed by applying Maximum Margin Planning. The functions iteratively apply the following three steps,
-  given pairs of trajectories (traj_i, traj_j) in DxD (D being the set of user demonstrations):
+Given that the user provided sample adaptations in addition to the demonstrations, the norm learning part is executed by applying Maximum Margin Planning. Given pairs of trajectories (traj_i, traj_j) in DxD (D being the set of user demonstrations), the functions iteratively apply the following three steps,
   1) compute the optimal solution to the "inner minimization problem" (right term in eq. 19)
   2) compute the gradient update for the norm with a hyper-parameter alpha, update the norm
   3) project the updated norm to the space of pos. def. matrices, unless "iterations" not exceeded, go to 1)
