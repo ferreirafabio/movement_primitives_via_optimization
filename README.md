@@ -16,6 +16,11 @@ Given that the user provided sample adaptations in addition to the demonstration
     Note: the projection is carried out by computing the nearest symmetric pos. def. matrix in the Frobenius norm according to [2], a method based on the polar decomposition. A second method we examined is based on the Cholesky decomposition.
     
 
-## Credits
+### References
+[1]
+[2] "Computing a nearest symmetric positive semidefinite matrix", Higham, 1988, https://www.sciencedirect.com/science/article/pii/0024379588902236
+
+
+### Credits
 Thank you to Drew Bagnell and Anca Dragan for giving support via e-mail.
 _Contributors: Jonas Rothfuss, Fabio Ferreira_
